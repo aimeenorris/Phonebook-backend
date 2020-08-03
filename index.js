@@ -48,11 +48,51 @@ app.get("/info", (req, res) => {
   const info = `Phonebook has info for ${persons.length} people`;
   const date = new Date();
   res.send(info + "<br/><br/>" + date);
-  //res.send(date.toString());
-  /*  res.write(info);
-  res.write("\n");
-  res.write(date.toString());
-  res.end(); */
+});
+
+app.delete("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+  persons = persons.filter((person) => person.id != id);
+  res.status(204).end();
+});
+
+const generateId = () => {
+  const id = Math.floor(Math.random() * 10000);
+  return id;
+};
+
+app.post("/api/persons", (req, res) => {
+  const body = req.body;
+
+  if (!body.name) {
+    return res.status(400).json({
+      error: "name missing",
+    });
+  }
+
+  if (!body.number) {
+    return res.status(400).json({
+      error: "phone number is missing",
+    });
+  }
+
+  const check = persons.find((person) => person.name === body.name);
+  if (check) {
+    return res.status(400).json({
+      error: "name is already in the phonebook",
+    });
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId(),
+  };
+
+  persons = persons.concat(person);
+  console.log(persons);
+
+  res.json(person);
 });
 
 const PORT = 3001;
