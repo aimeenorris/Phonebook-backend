@@ -40,9 +40,10 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model("Person", personSchema);
 
 if (display) {
+  console.log("Phonebook:");
   Person.find({}).then((result) => {
     result.forEach((person) => {
-      console.log(person);
+      console.log(`${person.name} ${person.number}`);
     });
     mongoose.connection.close();
   });
@@ -55,7 +56,7 @@ if (display) {
   });
 
   person.save().then((result) => {
-    console.log("phone entry saved!");
+    console.log(`Added ${person.name} ${person.number} to phonebook`);
     mongoose.connection.close();
   });
 }
